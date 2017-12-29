@@ -21,7 +21,10 @@
   //   console.log(originalArray);
   // });
 
-  function forEach(array, callback) {
+  function forEach(array, callback, optionalThisObject) {
+    if (optionalThisObject) {
+      callback = callback.bind(optionalThisObject);
+    }
     for (var i = 0; i < array.length; i++) {
       callback(array[i], i, array);
     }
@@ -50,6 +53,13 @@
       forEach(testArray, function (number, index, originalArray) {
         eq(originalArray, testArray);
       });
+    },
+    'It should accept an optional this object': function () {
+      var optionaThisObject = { name: 'sayed hassani' };
+      forEach([1, 2, 3], function () {
+        // eq(this, thisObject);
+        eq(this.name, 'sayed hassani');
+      }, optionaThisObject)
     }
   });
 </script>
