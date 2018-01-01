@@ -1,0 +1,77 @@
+<script src="../tinytest.js"></script>
+<script>
+    // Example 1:
+    // filter([1, 2, 3], function () {
+    //   console.log('hi');
+    // });
+
+    // Example 2:
+    // filter([1, 2, 3], function (number) {
+    //   console.log(number);
+    // });
+
+    // Example 3:
+    // filter([1, 2, 3], function (number,index) {
+    //   console.log(index);
+    // });
+
+    // Example 4:
+    // filter([1, 2, 3], function (number,index,originalArray) {
+    //   console.log(originalArray);
+    // });
+
+    // Example 5:
+    // filter([1, 2, 3], function (number,index,originalArray) {
+    //   console.log(this.name);
+    // },{name:'sayed'});
+
+    // Example 6:
+    // var testArray = [1,2,3];
+    // var filteredArray = filter([1, 2, 3], function () { });
+    // testArray !== filteredArray;
+
+
+
+
+    function filter(array, callback) {
+        var filteredArray = [];
+        for (var i = 0; i < array.length; i++) {
+            if (callback(array[i])) {
+                filteredArray.push(array[i]);
+            }
+        }
+    }
+
+    tests({
+        'It should run the callback function array.length times': function () {
+            var counter = 0;
+            filter([1, 2, 3], function () {
+                counter++;
+            });
+            eq(counter, 3);
+        },
+        'It should pass in the ith element as the first argument to the callback': function () {
+            filter([1], function (number) {
+                eq(number, 1);
+            });
+        },
+        'It should pass in the ith element as the second argument to the callback': function () {
+            filter([1], function (number, index) {
+                eq(index, 0);
+            });
+        },
+        'It should pass in the original array as the third argument to the callback': function () {
+            var testArray = [1, 2, 3]
+            filter(testArray, function (number, index, originalArray) {
+                eq(originalArray, testArray);
+            });
+        },
+        'It should accept an optional this object': function () {
+            var optionaThisObject = { name: 'sayed hassani' };
+            filter([1, 2, 3], function () {
+                // eq(this, thisObject);
+                eq(this.name, 'sayed hassani');
+            }, optionaThisObject)
+        }
+    });
+</script>
