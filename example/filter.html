@@ -28,18 +28,28 @@
     // Example 6:
     // var testArray = [1,2,3];
     // var filteredArray = filter([1, 2, 3], function () { });
+    // Expect testArray !== filteredArray;
+
+    // Example 7:
+    // var testArray = [1,2,3];
+    // var filteredArray = filter(testArray, function (element) {
+    // return element > 1;
+    // });
     // testArray !== filteredArray;
+    // Expect filteredArray to be [2,3]
 
 
-
-
-    function filter(array, callback) {
+    function filter(array, callback, optionnelThisObject) {
+        if (optionnelThisObject) {
+            callback = callback.bind(optionnelThisObject);
+        }
         var filteredArray = [];
         for (var i = 0; i < array.length; i++) {
-            if (callback(array[i])) {
+            if (callback(array[i], i, array)) {
                 filteredArray.push(array[i]);
             }
         }
+        return filteredArray;
     }
 
     tests({
@@ -72,6 +82,25 @@
                 // eq(this, thisObject);
                 eq(this.name, 'sayed hassani');
             }, optionaThisObject)
+        },
+        'It should return new array, not the array being filtered': function () {
+            var testArray = [1, 2, 3]
+            var filteredArray = filter(testArray, function (number, index, originalArray) {
+                return true;
+            });
+            eq(Array.isArray(filteredArray), true);
+            eq(testArray !== filteredArray, true);
+        },
+        'It should return new array that only has elements where callback returns true': function () {
+            var testArray = [1, 2, 3, 8, 9, 12, 14]
+            var filteredArray = filter(testArray, function (number, index, originalArray) {
+                return number > 2;
+            });
+            eq(filteredArray.length, 5);
+            var expectedArray = [3, 8, 9, 12, 14];
+            for (var i = 1; i < filteredArray.length; i++) {
+                eq(filteredArray[i], expectedArray[i]);
+            }
         }
     });
 </script>
